@@ -1,0 +1,15 @@
+/Users/rayarnold/Documents/db-csharp/bin/Debug/net8.0/db-csharp
+/Users/rayarnold/Documents/db-csharp/bin/Debug/net8.0/db-csharp.deps.json
+/Users/rayarnold/Documents/db-csharp/bin/Debug/net8.0/db-csharp.runtimeconfig.json
+/Users/rayarnold/Documents/db-csharp/bin/Debug/net8.0/db-csharp.dll
+/Users/rayarnold/Documents/db-csharp/bin/Debug/net8.0/db-csharp.pdb
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.GeneratedMSBuildEditorConfig.editorconfig
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.AssemblyInfoInputs.cache
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.AssemblyInfo.cs
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.csproj.CoreCompileInputs.cache
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.sourcelink.json
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.dll
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/refint/db-csharp.dll
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.pdb
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/db-csharp.genruntimeconfig.cache
+/Users/rayarnold/Documents/db-csharp/obj/Debug/net8.0/ref/db-csharp.dll

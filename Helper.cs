@@ -187,6 +187,7 @@ public static class Helper {
                     newValue = GetDate(message + " (YYYY-MM-DD format):");
                     AppendRowValue(newValue, col.Key, rows);
                 }
+                //ADD A DATETIME HELPER FUNCTION AND AN OPTION TO VALIDATE
             }
 
             continueDecision = GetUserInput("Add another row? [y]es or [n]o").ToLower();

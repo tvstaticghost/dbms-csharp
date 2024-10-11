@@ -12,14 +12,16 @@ class Program {
         //Console.Write(tableData.FirstOrDefault().Value.Length);
 
         DBSystem sys = new();
+        UserInterface ui = new(sys);
+        ui.Run();
         // sys.CreateTable();
         // sys.PrintTableList();
         // sys.DescribeTable();
 
-        sys.CreateTable();
-        sys.DescribeTable();
-        sys.AddRowsToTable();
-        sys.SelectAllFromTable();
+        // sys.CreateTable();
+        // sys.DescribeTable();
+        // sys.AddRowsToTable();
+        // sys.SelectAllFromTable();
 
         // practiceRows["first_name"] = ["Ray", "Sofia", "Otto"];
 

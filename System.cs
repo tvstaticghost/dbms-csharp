@@ -6,6 +6,7 @@ class DBSystem {
     private string AnotherColumnMessage = "Add another column?\n[y]es or [n]o: ";
     private string ColumnNameMessage = "Enter column name: ";
     private string WhatTableMessage = "Enter table name to describe: ";
+    private string TableUpdateMessage = "Enter table name to update: ";
     public List<Table> tables = [];
 
     public void CreateTable() {
@@ -24,7 +25,7 @@ class DBSystem {
             string keyType = "";
             if (!pkPresent) {
                 keyType = Helper.IsPrimaryKey(columnName);
-                pkPresent = true;   
+                if (keyType == "pk") { pkPresent = true; }  
             }
 
             cols[columnName] = [dataType, keyType];
@@ -35,11 +36,6 @@ class DBSystem {
 
         Table newTable = new(tableName, cols);
         tables.Add(newTable);
-
-        //test current table information
-        foreach (KeyValuePair<string, string[]> entry in cols) {
-            Console.WriteLine($"{entry.Key} - {entry.Value[0]} {entry.Value[1]}");
-        }
     }
 
     public void DescribeTable() {
@@ -60,10 +56,24 @@ class DBSystem {
         }
     }
 
+    public void AddRowsToTable() {
+        string tableToUpdate = Helper.GetUserInput(TableUpdateMessage);
+        bool tablePresent = false;
+
+        foreach(Table table in tables) {
+            if (table.GetTableName() == tableToUpdate) {
+                Helper.AddRows(table.GetCols());
+                tablePresent = true;
+            }
+        }
+
+        if (!tablePresent) { Console.WriteLine($"{tableToUpdate} not found..."); }
+    }
+
     //Add method to append rows to a table (check for datatypes and validate)
 
     public void PrintTableList() { 
-        Console.WriteLine("=====Table List=====");
+        Console.WriteLine("+".PadRight(10, '-') + "Table List" + "+".PadLeft(10, '-'));
         if (tables.Count > 0) {
             foreach (Table table in tables) {
                 Console.WriteLine(table.GetTableName());
@@ -72,6 +82,6 @@ class DBSystem {
         else {
             Console.WriteLine("No tables in database...");
         }
-        Console.WriteLine("====================");
+        Console.WriteLine("+".PadRight(15, '-') + "+".PadLeft(15, '-'));
      }
 }

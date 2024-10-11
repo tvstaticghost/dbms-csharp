@@ -160,12 +160,16 @@ public static class Helper {
         Console.WriteLine("");
         Console.WriteLine("-".PadRight(40, '-') + '-');
 
+        bool noRows = true;
         for (int i = 0; i < tableRows.FirstOrDefault().Value.Length; i++) {
+            noRows = false;
             foreach(var key in tableRows.Keys) {
                 Console.Write($"{tableRows[key][i]}".PadRight(10) + "|".PadRight(5));
             }
             Console.WriteLine("");
         }
+
+        if (noRows) {Console.WriteLine("No rows added to table...");}
         Console.WriteLine("+".PadRight(40, '-') + '+');
     }
 

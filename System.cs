@@ -15,6 +15,10 @@ class DBSystem {
         Dictionary<string, string[]> rows = [];
         //get the name of the table
         string tableName = Helper.GetUserInput(tableNameMessage);
+        bool tableCheck = DoesTableExist(tableName);
+
+        //check to see if the table already exists in the table list to prevent duplicates
+        if (tableCheck) {Console.WriteLine($"Table already exists"); return;}
 
         bool pkPresent = false;
         bool addColumn = Helper.AddColumn(ColumnMessage);
@@ -34,8 +38,11 @@ class DBSystem {
 
             addColumn = Helper.AddColumn(AnotherColumnMessage); //continue or end the loop
         }
-        //tables.Add();
-
+        
+        if (cols.Count == 0) {
+            Console.WriteLine("Newly created tables must contain atleast 1 column. Table discarded...");
+            return;
+        }
         Table newTable = new(tableName, cols, rows);
         tables.Add(newTable);
     }
@@ -104,4 +111,13 @@ class DBSystem {
         }
         Console.WriteLine("+".PadRight(15, '-') + "+".PadLeft(15, '-'));
      }
+
+     public bool DoesTableExist(string tableName) {
+        foreach (Table table in tables) {
+            if (table.GetTableName() == tableName) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

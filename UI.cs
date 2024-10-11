@@ -4,7 +4,7 @@ class UserInterface(DBSystem sys)
 {
 private readonly string WelcomeMessage = "Welcome to SQLShite";
 private readonly string ExitMessage = "Closing SQLShite...Goodbye";
-private readonly List<string> MenuOptions = ["1: Create Table", "2: Add Rows to Table", "3: Select All Data From Table", "4: View Table List", "5: Describe Table", "Q: Quit SQLShite"];
+private readonly List<string> MenuOptions = ["1: Create Table", "2: Add Rows to Table", "3: Select All Data From Table", "4: View Table List", "5: Describe Table", "M: View Menu Options", "Q: Quit SQLShite"];
 private readonly DBSystem sys = sys;
 
     public void DisplayWelcomeMessage() {
@@ -29,7 +29,7 @@ private readonly DBSystem sys = sys;
     public void Run() {
         DisplayWelcomeMessage();
         DisplayMenuOptions();
-        string selectionMessage = $"Make a menu selection using ";
+        string selectionMessage = $"Make a selection using the number/letter in front of the following menu options:  ";
         bool running = true;
 
         string userInput = Helper.GetUserInput(selectionMessage);

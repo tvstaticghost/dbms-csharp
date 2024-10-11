@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "BasdkWTQFANIts61pIVVMy5Ur6WUPn8/H6q+lPwIOm30I8cig2P3fQVH0n+0Y0zHft/TLMcoTAvK3K9b2Cv/kA==",
+  "dgSpecHash": "EP9syPLu2So2NuK61hygbznCafx8gdrw6k2qZ3YyqGKvl0AuMHQzjc3L4agql18s/GCZR61FwFteTmymE1KW6g==",
   "success": true,
-  "projectFilePath": "/Users/rayarnold/Documents/db-csharp/db-csharp.csproj",
+  "projectFilePath": "C:\\Users\\rayma\\Documents\\dbms-csharp\\db-csharp.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

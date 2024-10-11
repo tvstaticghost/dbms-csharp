@@ -1,3 +1,5 @@
+using System.Data;
+using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 
 public static class Helper {
@@ -44,7 +46,7 @@ public static class Helper {
         while (true) {
             allNumbers = true;
             for (int i = 0; i < userInput.Length; i++) {
-                if (userInput[i] >= 57 && userInput[i] >= 48) { allNumbers = false; break; }
+                if (userInput[i] < '0' || userInput[i] > '9') { allNumbers = false; break; }
             }
 
             if (allNumbers) {break;}
@@ -138,7 +140,7 @@ public static class Helper {
         Console.WriteLine($"\n{tableName}");
         Console.WriteLine("+".PadRight(40, '-') + '+');
         Console.WriteLine("Field".PadRight(10) + "|".PadRight(5) + "Type".PadRight(10) + "|".PadRight(5) + "Key".PadRight(10));
-        Console.WriteLine("+".PadRight(40, '-') + '+');
+        Console.WriteLine("-".PadRight(40, '-') + '-');
 
         if (cols.Count <= 0) { Console.WriteLine("No columns in table..."); }
         else {
@@ -149,18 +151,60 @@ public static class Helper {
         Console.WriteLine("+".PadRight(40, '-') + '+');
     }
 
-    public static void AddRows(Dictionary<string, string[]> columns) {
-        foreach(KeyValuePair<string, string[]> col in columns) {
-            string message = $"Please enter a {col.Value[0]} value for the {col.Key} column";
-            if (col.Value[0] == "varchar") {
-                GetVarchar(message);
-            }
-            else if (col.Value[0] == "int") {
-                GetInt(message);
-            }
-            else if (col.Value[0] == "date") {
-                GetDate(message + " (YYYY-MM-DD format):");
-            }
+    public static void SelectFromTable(string tableName, Dictionary<string, string[]> tableCols, Dictionary<string, string[]> tableRows) {
+        Console.WriteLine($"\n{tableName}");
+        Console.WriteLine("+".PadRight(40, '-') + '+');
+        foreach (KeyValuePair<string, string[]> col in tableCols) {
+            Console.Write($"{col.Key}".PadRight(10) + "|".PadRight(5));
         }
+        Console.WriteLine("");
+        Console.WriteLine("-".PadRight(40, '-') + '-');
+
+        for (int i = 0; i < tableRows.FirstOrDefault().Value.Length; i++) {
+            foreach(var key in tableRows.Keys) {
+                Console.Write($"{tableRows[key][i]}".PadRight(10) + "|".PadRight(5));
+            }
+            Console.WriteLine("");
+        }
+        Console.WriteLine("+".PadRight(40, '-') + '+');
+    }
+
+    public static void AddRows(Dictionary<string, string[]> columns, Dictionary<string, string[]> rows) {
+        string continueDecision;
+        do {
+            foreach(KeyValuePair<string, string[]> col in columns) {
+                string newValue;
+                string message = $"Please enter a {col.Value[0]} value for the {col.Key} column";
+                if (col.Value[0] == "varchar") {
+                    newValue = GetVarchar(message);
+                    AppendRowValue(newValue, col.Key, rows);
+                }
+                else if (col.Value[0] == "int") {
+                    newValue = GetInt(message);
+                    AppendRowValue(newValue, col.Key, rows);
+                }
+                else if (col.Value[0] == "date") {
+                    newValue = GetDate(message + " (YYYY-MM-DD format):");
+                    AppendRowValue(newValue, col.Key, rows);
+                }
+            }
+
+            continueDecision = GetUserInput("Add another row? [y]es or [n]o").ToLower();
+            while (continueDecision != "y" && continueDecision != "yes" && continueDecision != "n" && continueDecision != "no") {
+                Console.WriteLine("Invalid Selection");
+                continueDecision = GetUserInput("Add another row? [y]es or [n]o").ToLower();
+            }
+        } while (continueDecision == "y" || continueDecision == "yes");
+        
+    }
+
+    public static void AppendRowValue(string valueToAppend, string columnToAppendTo, Dictionary<string, string[]> rows) {
+        string[] currentRow = rows[columnToAppendTo];
+        string[] newRow = new string[currentRow.Length + 1];
+
+        Array.Copy(currentRow, newRow, currentRow.Length);
+        newRow[newRow.Length - 1] = valueToAppend;
+
+        rows[columnToAppendTo] = newRow;
     }
 }

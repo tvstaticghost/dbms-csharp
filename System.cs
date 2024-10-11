@@ -9,9 +9,10 @@ class DBSystem {
     private string TableUpdateMessage = "Enter table name to update: ";
     public List<Table> tables = [];
 
-    public void CreateTable() {
+    public void CreateTable() { //Need to check forduplicate tables!!!
         //define a dictionary to add column names and data attributes
         Dictionary<string, string[]> cols = [];
+        Dictionary<string, string[]> rows = [];
         //get the name of the table
         string tableName = Helper.GetUserInput(tableNameMessage);
 
@@ -29,12 +30,13 @@ class DBSystem {
             }
 
             cols[columnName] = [dataType, keyType];
+            rows[columnName] = [];
 
             addColumn = Helper.AddColumn(AnotherColumnMessage); //continue or end the loop
         }
         //tables.Add();
 
-        Table newTable = new(tableName, cols);
+        Table newTable = new(tableName, cols, rows);
         tables.Add(newTable);
     }
 
@@ -62,7 +64,7 @@ class DBSystem {
 
         foreach(Table table in tables) {
             if (table.GetTableName() == tableToUpdate) {
-                Helper.AddRows(table.GetCols());
+                Helper.AddRows(table.GetCols(), table.GetRows());
                 tablePresent = true;
             }
         }
@@ -71,6 +73,24 @@ class DBSystem {
     }
 
     //Add method to append rows to a table (check for datatypes and validate)
+
+    public void SelectAllFromTable() {
+        string tableToQuery = Helper.GetUserInput(WhatTableMessage);
+        bool tableFound = false;
+
+        foreach(Table table in tables) {
+            if (table.GetTableName() == tableToQuery) {
+                tableFound = true;
+                Helper.SelectFromTable(table.GetTableName(), table.GetCols(), table.GetRows());
+                return;
+            }
+        }
+
+        if (!tableFound) {
+            Console.WriteLine($"{tableToQuery} not found in database...");
+            return;
+        }
+    }
 
     public void PrintTableList() { 
         Console.WriteLine("+".PadRight(10, '-') + "Table List" + "+".PadLeft(10, '-'));

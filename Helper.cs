@@ -1,6 +1,7 @@
 using System.Data;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 public static class Helper {
     public static string GetUserInput(string message)
@@ -18,6 +19,23 @@ public static class Helper {
         
         // Return sanitized input
         return r.Replace(userInput, string.Empty);
+    }
+
+    public static bool GetYesOrNo(string message) {
+        Console.WriteLine(message + ": [y]es or [n]o");
+        string userInput = Console.ReadLine().ToLower();
+
+        while (userInput != "y" && userInput != "yes" && userInput != "n" && userInput != "no") {
+            Console.WriteLine("Invalid input...");
+            userInput = Console.ReadLine().ToLower();
+        }
+
+        if (userInput == "y" || userInput == "yes") {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 
@@ -181,20 +199,34 @@ public static class Helper {
             columnCopy.Add(key);
         }
 
-        string colOptions = "(";
-        foreach (string col in columnCopy) {
-            colOptions += col + " ";
-        }
-        colOptions += ")";
+        do {
+            string colOptions = "(";
+            foreach (string col in columnCopy) {
+                colOptions += col + " ";
+            }
+            colOptions += ")";
 
-        string userColumnSelection = GetUserInput($"Which column in {tableName} do you want to select?\n{colOptions}");
+            string userColumnSelection = GetUserInput($"Which column in {tableName} do you want to select?\n{colOptions}");
 
-        if (columnCopy.Contains(userColumnSelection)) {
-            Console.WriteLine("Thats in the table");
-        }
-        else {
-            Console.WriteLine($"{userColumnSelection} is not a valid column in the {tableName} table...");
-        }
+            if (columnCopy.Contains(userColumnSelection)) {
+                selectedColumns.Add(userColumnSelection);
+                columnCopy.Remove(userColumnSelection);
+
+                if (columnCopy.Count >= 1) {
+                    bool anotherRow = GetYesOrNo("Select data from another row? ");
+                    if (!anotherRow) {
+                        break;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+
+        } while (true);
+
+        //shows all selected columns to query in the selectedCols list. 
+        //ADD functionality to select data based on 1 or more selected columns.
     }
 
     public static void AddRows(Dictionary<string, string[]> columns, Dictionary<string, string[]> rows) {

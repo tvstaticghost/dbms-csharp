@@ -4,7 +4,7 @@ class UserInterface(DBSystem sys)
 {
 private readonly string WelcomeMessage = "Welcome to SQLShite";
 private readonly string ExitMessage = "Closing SQLShite...Goodbye";
-private readonly List<string> MenuOptions = ["1: Create Table", "2: Add Rows to Table", "3: Select All Data From Table", "4: View Table List", "5: Describe Table", "M: View Menu Options", "Q: Quit SQLShite"];
+private readonly List<string> MenuOptions = ["1: Create Table", "2: Add Rows to Table", "3: Select All Data From Table", "4: Select Specific Data From Table", "5: View Table List", "6: Describe Table", "M: View Menu Options", "Q: Quit SQLShite"];
 private readonly DBSystem sys = sys;
 
     public void DisplayWelcomeMessage() {
@@ -45,9 +45,12 @@ private readonly DBSystem sys = sys;
                     sys.SelectAllFromTable();
                     break;
                 case "4":
-                    sys.PrintTableList();
+                    sys.SelectSpecificDataFromTable();
                     break;
                 case "5":
+                    sys.PrintTableList();
+                    break;
+                case "6":
                     sys.DescribeTable();
                     break;
                 case "q":

@@ -173,6 +173,30 @@ public static class Helper {
         Console.WriteLine("+".PadRight(40, '-') + '+');
     }
 
+    public static void SelectSpecificFromTable(string tableName, Dictionary<string, string[]> tableCols, Dictionary<string, string[]> tableRows) {
+        List<string> selectedColumns = [];
+        List<string> columnCopy = [];
+
+        foreach (var key in tableCols.Keys) {
+            columnCopy.Add(key);
+        }
+
+        string colOptions = "(";
+        foreach (string col in columnCopy) {
+            colOptions += col + " ";
+        }
+        colOptions += ")";
+
+        string userColumnSelection = GetUserInput($"Which column in {tableName} do you want to select?\n{colOptions}");
+
+        if (columnCopy.Contains(userColumnSelection)) {
+            Console.WriteLine("Thats in the table");
+        }
+        else {
+            Console.WriteLine($"{userColumnSelection} is not a valid column in the {tableName} table...");
+        }
+    }
+
     public static void AddRows(Dictionary<string, string[]> columns, Dictionary<string, string[]> rows) {
         string continueDecision;
         do {

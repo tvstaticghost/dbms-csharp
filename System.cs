@@ -99,6 +99,25 @@ class DBSystem {
         }
     }
 
+    public void SelectSpecificDataFromTable() {
+        string tableToQuery = Helper.GetUserInput(WhatTableMessage);
+        bool tableFound = false;
+
+        foreach (Table table in tables) {
+            if (table.GetTableName() == tableToQuery) {
+                tableFound = true;
+                //Add Helper Function
+                Helper.SelectSpecificFromTable(table.GetTableName(), table.GetCols(), table.GetRows());
+                return;
+            }
+        }
+
+        if (!tableFound) {
+            Console.WriteLine($"{tableToQuery} not found in database...");
+            return;
+        }
+    }
+
     public void PrintTableList() { 
         Console.WriteLine("+".PadRight(10, '-') + "Table List" + "+".PadLeft(10, '-'));
         if (tables.Count > 0) {

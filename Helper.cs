@@ -238,7 +238,6 @@ public static class Helper {
 
     public static void SelectSpecificFromTable(string tableName, Dictionary<string, string[]> tableCols, Dictionary<string, string[]> tableRows) {
         List<string> selectedColumns = [];
-        List<string> selectedDataTypes = [];
         List<string> columnCopy = [];
 
         foreach (var key in tableCols.Keys) {
@@ -286,6 +285,14 @@ public static class Helper {
             selectedRows[item] = [];
         }
 
+        foreach (KeyValuePair<string, string[]> col in tableCols) {
+            foreach (KeyValuePair<string, string[]> newCol in selectedCols) {
+                if (col.Key == newCol.Key) {
+                    selectedCols[col.Key] = col.Value;
+                }
+            }
+        }
+
         //copy over the row array if the dictionary keys match between the tableRows and the selectedRows
         foreach (KeyValuePair<string, string[]> row in tableRows) {
             foreach (KeyValuePair<string, string[]> otherRow in selectedRows) {
@@ -308,22 +315,24 @@ public static class Helper {
 
     public static void FilterSpecificColumns(string tableName, Dictionary<string, string[]> tableCols, Dictionary<string, string[]> tableRows) {
         List<string> filterOptions = [];
+
         foreach (var key in tableCols.Keys) {
             filterOptions.Add(key);
         }
 
-        string message = "Which column would you like to filter by? (";
-        for (int i = 0; i < filterOptions.Count; i++) {
-            if (i < filterOptions.Count - 1) {
-                message += filterOptions[i] + ", ";
+        if (filterOptions.Count > 1) {
+            string message = "Which column would you like to filter by? (";
+            for (int i = 0; i < filterOptions.Count; i++) {
+                if (i < filterOptions.Count - 1) {
+                    message += filterOptions[i] + ", ";
+                }
+                else {
+                    message += filterOptions[i];
+                }
             }
-            else {
-                message += filterOptions[i];
-            }
+            message += ")";
         }
-        message += ")";
-
-        System.Console.WriteLine(message);
+        
     }
 
     public static void AddRows(Dictionary<string, string[]> columns, Dictionary<string, string[]> rows) {

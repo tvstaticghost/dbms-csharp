@@ -21,20 +21,30 @@ class DBSystem {
         if (tableCheck) {Console.WriteLine($"Table already exists"); return;}
 
         bool pkPresent = false;
+        bool columnPresent = false;
         bool addColumn = Helper.AddColumn(ColumnMessage);
 
         //loop through and gather column data using Helper class methods
         while (addColumn) {
+            columnPresent = false;
             string columnName = Helper.GetUserInput(ColumnNameMessage);
-            string dataType = Helper.GetColumnDataType(columnName);
-            string keyType = "";
-            if (!pkPresent) {
-                keyType = Helper.IsPrimaryKey(columnName);
-                if (keyType == "pk") { pkPresent = true; }  
+            foreach (var key in cols.Keys) {
+                if (key == columnName) {
+                    Console.WriteLine("This column already exists...");
+                    columnPresent = true;
+                }
             }
+            if (!columnPresent) {
+                string dataType = Helper.GetColumnDataType(columnName);
+                string keyType = "";
+                if (!pkPresent) {
+                    keyType = Helper.IsPrimaryKey(columnName);
+                    if (keyType == "pk") { pkPresent = true; }  
+                }
 
-            cols[columnName] = [dataType, keyType];
-            rows[columnName] = [];
+                cols[columnName] = [dataType, keyType];
+                rows[columnName] = [];
+            }
 
             addColumn = Helper.AddColumn(AnotherColumnMessage); //continue or end the loop
         }

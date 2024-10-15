@@ -1,6 +1,8 @@
+using System.ComponentModel;
 using System.Data;
 using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
+using System.Threading.Channels;
 
 public static class Helper {
     public static string GetUserInput(string message)
@@ -18,6 +20,23 @@ public static class Helper {
         
         // Return sanitized input
         return r.Replace(userInput, string.Empty);
+    }
+
+    public static bool GetYesOrNo(string message) {
+        Console.WriteLine(message + ": [y]es or [n]o");
+        string userInput = Console.ReadLine().ToLower();
+
+        while (userInput != "y" && userInput != "yes" && userInput != "n" && userInput != "no") {
+            Console.WriteLine("Invalid input...");
+            userInput = Console.ReadLine().ToLower();
+        }
+
+        if (userInput == "y" || userInput == "yes") {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
 
@@ -71,6 +90,50 @@ public static class Helper {
                         break;
                     }
                     if (i != 4 && i != 7 && (userInput[i] < '0' || userInput[i] > '9')) {
+                        correctFormat = false;
+                        break;
+                    }
+                }
+            }
+
+            if (correctFormat) {
+                if (DateTime.TryParse(userInput, out _)) {
+                    return userInput;
+                }
+                else {
+                    Console.WriteLine("Invalid date.");
+                }
+            }
+            userInput = GetUserInput(message);
+        }
+    }
+
+    public static string GetDateTime(string message) {
+        string userInput = GetUserInput(message);
+        bool correctFormat;
+
+        //check for a YYYY-MM-DD HH:MI:SS format
+        while(true) {
+            correctFormat = true;
+
+            if (userInput.Length == 19) {
+                for (int i = 0; i < userInput.Length; i++) {
+                    if ((i == 4 || i == 7) && userInput[i] != '-') {
+                        correctFormat = false;
+                        break;
+                    }
+
+                    if (i != 4 && i != 7 && i != 10 && i != 13 && i != 16 && (userInput[i] < '0' || userInput[i] > '9')) {
+                        correctFormat = false;
+                        break;
+                    }
+
+                    if ((i == 10) && userInput[i] != ' ') {
+                        correctFormat = false;
+                        break;
+                    }
+
+                    if ((i == 13 || i == 16) && userInput[i] != ':') {
                         correctFormat = false;
                         break;
                     }
@@ -175,26 +238,92 @@ public static class Helper {
 
     public static void SelectSpecificFromTable(string tableName, Dictionary<string, string[]> tableCols, Dictionary<string, string[]> tableRows) {
         List<string> selectedColumns = [];
+        List<string> selectedDataTypes = [];
         List<string> columnCopy = [];
 
         foreach (var key in tableCols.Keys) {
             columnCopy.Add(key);
         }
 
-        string colOptions = "(";
-        foreach (string col in columnCopy) {
-            colOptions += col + " ";
+        do {
+            string colOptions = "(";
+            foreach (string col in columnCopy) {
+                colOptions += col + " ";
+            }
+            colOptions = colOptions.TrimEnd();
+            colOptions += ")";
+
+            string userColumnSelection = GetUserInput($"Which column in {tableName} do you want to select?\n{colOptions}");
+
+            if (columnCopy.Contains(userColumnSelection)) {
+                selectedColumns.Add(userColumnSelection);
+                columnCopy.Remove(userColumnSelection);
+
+                if (columnCopy.Count >= 1) {
+                    bool anotherRow = GetYesOrNo("Select data from another row? ");
+                    if (!anotherRow) {
+                        break;
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+
+        } while (true);
+
+        //shows all selected columns to query in the selectedCols list. 
+        //ADD functionality to select data based on 1 or more selected columns.
+
+        //create a copy of tableRows and tableCols Dictionaries to pass to SelectFromTable function to print out the info
+
+        Dictionary<string, string[]> selectedCols = [];
+        Dictionary<string, string[]> selectedRows = [];
+
+        //populate the selectedCols and selectedRows Dictionaries with the selected Column Keys
+        foreach (string item in selectedColumns) {
+            selectedCols[item] = [];
+            selectedRows[item] = [];
         }
-        colOptions += ")";
 
-        string userColumnSelection = GetUserInput($"Which column in {tableName} do you want to select?\n{colOptions}");
+        //copy over the row array if the dictionary keys match between the tableRows and the selectedRows
+        foreach (KeyValuePair<string, string[]> row in tableRows) {
+            foreach (KeyValuePair<string, string[]> otherRow in selectedRows) {
+                if (row.Key == otherRow.Key) {
+                    selectedRows[row.Key] = row.Value;
+                }
+            }
+        }
 
-        if (columnCopy.Contains(userColumnSelection)) {
-            Console.WriteLine("Thats in the table");
+        bool filterResults = GetYesOrNo("Would you like to filter the column results? ");
+
+        if (filterResults) {
+            FilterSpecificColumns(tableName, selectedCols, selectedRows);
         }
         else {
-            Console.WriteLine($"{userColumnSelection} is not a valid column in the {tableName} table...");
+            //print the specific rows of a table
+            SelectFromTable(tableName, selectedCols, selectedRows);
         }
+    }
+
+    public static void FilterSpecificColumns(string tableName, Dictionary<string, string[]> tableCols, Dictionary<string, string[]> tableRows) {
+        List<string> filterOptions = [];
+        foreach (var key in tableCols.Keys) {
+            filterOptions.Add(key);
+        }
+
+        string message = "Which column would you like to filter by? (";
+        for (int i = 0; i < filterOptions.Count; i++) {
+            if (i < filterOptions.Count - 1) {
+                message += filterOptions[i] + ", ";
+            }
+            else {
+                message += filterOptions[i];
+            }
+        }
+        message += ")";
+
+        System.Console.WriteLine(message);
     }
 
     public static void AddRows(Dictionary<string, string[]> columns, Dictionary<string, string[]> rows) {
@@ -216,6 +345,10 @@ public static class Helper {
                     AppendRowValue(newValue, col.Key, rows);
                 }
                 //ADD A DATETIME HELPER FUNCTION AND AN OPTION TO VALIDATE
+                else if (col.Value[0] == "datetime") {
+                    newValue = GetDateTime(message + " (YYYY-MM-DD HH:MI:SS format):");
+                    AppendRowValue(newValue, col.Key, rows);
+                }
             }
 
             continueDecision = GetUserInput("Add another row? [y]es or [n]o").ToLower();

@@ -320,18 +320,67 @@ public static class Helper {
             filterOptions.Add(key);
         }
 
-        if (filterOptions.Count > 1) {
-            string message = "Which column would you like to filter by? (";
-            for (int i = 0; i < filterOptions.Count; i++) {
-                if (i < filterOptions.Count - 1) {
-                    message += filterOptions[i] + ", ";
+
+        do {
+            if (filterOptions.Count >= 1) {
+                string message = "Which column would you like to filter by? (";
+                string parameterMessage = "Select the following parameter";
+                for (int i = 0; i < filterOptions.Count; i++) {
+                    if (i < filterOptions.Count - 1) {
+                        message += filterOptions[i] + ", ";
+                    }
+                    else {
+                        message += filterOptions[i];
+                    }
                 }
-                else {
-                    message += filterOptions[i];
+                message += ")";
+                string userInput = GetUserInput(message);
+                if (filterOptions.Contains(userInput)) {
+                    System.Console.WriteLine($"You want to filter by {userInput} which has a datatype of {tableCols[userInput][0]}");
+
+                    if (tableCols[userInput][0] == "varchar") {
+                        //System.Console.WriteLine("varchar path");
+                        string filterParameter = GetUserInput(parameterMessage + ": (1: equals, 2: starts with, 3: ends with, 4: contains)");
+                        while (true) {
+                            if (filterParameter == "1" || filterParameter == "2" || filterParameter == "3" || filterParameter == "4") { break;}
+                            Console.WriteLine("Invalid selection...");
+                            filterParameter = GetUserInput(parameterMessage + ": (1: equals, 2: starts with, 3: ends with, 4: contains)");
+                        }
+                        switch (filterParameter) {
+                            case "1":
+                                filterParameter = "equals";
+                                break;
+                            case "2":
+                                filterParameter = "starts with";
+                                break;
+                            case "3":
+                                filterParameter = "ends with";
+                                break;
+                            case "4":
+                                filterParameter = "contains";
+                                break;
+                        }
+
+                        string finalParameter = GetVarchar($"Enter the criteria: {userInput} {filterParameter}");
+
+                        // if () {
+
+                        // }
+                        
+                        Console.WriteLine($"You selected to search by {userInput} {filterParameter} {finalParameter}");
+                    }
+                    else if (tableCols[userInput][0] == "int") {
+                        System.Console.WriteLine("int path");
+                    }
+                    else {
+                        System.Console.WriteLine("date path");
+                    }
+                    return;
                 }
+                System.Console.WriteLine("Invalid column choice...");
             }
-            message += ")";
-        }
+        } while (true);
+        
         
     }
 
